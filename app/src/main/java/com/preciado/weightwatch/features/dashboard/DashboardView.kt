@@ -1,6 +1,7 @@
 package com.preciado.weightwatch.features.dashboard
 
 import android.graphics.Paint
+import android.graphics.PointF
 import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -28,6 +30,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.preciado.weightwatch.core.components.Graph
+import com.preciado.weightwatch.core.components.LineGraph
+import com.preciado.weightwatch.core.components.LineGraphv2
+import kotlin.random.Random
 
 @Composable
 fun DashBoardView(
@@ -35,12 +41,57 @@ fun DashBoardView(
     navController: NavController
 ){
     Column (modifier = modifier){
-        
+        val yStep = 50
+        val random = Random
+        val points = (0..9).map{
+            var num = random.nextInt(350)
+            if(num <= 50){
+                num += 100
+            }
+            num.toFloat()
+        }
         //This will show a graph of all(or maybe from date to date) weight inputs
         Box(modifier = Modifier
             .weight(2f)
             .fillMaxWidth()){
-            
+
+
+
+//            LineGraph(
+//                modifier = Modifier.fillMaxWidth().height(500.dp),
+//                xValues = (0..9).map{it + 1},
+//                yValues = (0..9).map{(it + 1) * yStep},
+//                points = points,
+//                paddingSpace = 16.dp,
+//                verticalStep = yStep
+//            )
+
+            var xArea = mutableListOf<Float>()
+            var yArea = mutableListOf<Float>()
+            var points = mutableListOf<PointF>()
+
+            for(i in 0 until 9){
+                xArea.add(i.toFloat())
+                yArea.add(i.toFloat())
+                for (j in 0 until 9){
+                    points.add(PointF(i.toFloat(),(j + 1).toFloat()))
+                }
+            }
+
+
+
+            LineGraphv2(
+                modifier = Modifier.fillMaxWidth().height(500.dp),
+                xValues = xArea,
+                yValues = yArea,
+                points = points,
+                paddingSpace = 10.dp,
+                verticalStep = 50f
+            )
+
+
+
+
         }
         //Shows relevant info such as weight average and eating habits
         Card(modifier = Modifier
@@ -60,6 +111,11 @@ fun DashBoardView(
             }
 
         }
+
+
+
+
+
         //Buttons to navigate to other views
         BottomAppBar(modifier = Modifier) {
 
@@ -74,26 +130,6 @@ fun DashBoardView(
 }
 
 
-@Composable
-fun Graph(
-    modifier: Modifier,
-    xValues: List<Int>,
-    yValues: List<Int>,
-    points: List<Float>,
-    paddingSpace: Dp,
-    VerticalStep:Int
-){
-    Box(
-        modifier = modifier
-            .background(Color.White)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        contentAlignment = Alignment.Center
-    ){
-        Canvas(modifier = Modifier.fillMaxWidth()){
-
-        }
-    }
-}
 
 
 @Preview
